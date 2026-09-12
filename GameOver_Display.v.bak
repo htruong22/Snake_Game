@@ -1,0 +1,56 @@
+module GameOver_Display(
+	 input [10:0] px_x;
+	 input [9:0] px_y;
+	 output is_text
+)
+	 wire char_G, char_A, char_M, char_E1;
+    wire char_O, char_V, char_E2, char_R;
+	 
+	 wire char_G = ((xCount>=250 && xCount<280) && (yCount>=250 && yCount<260)) || 
+                  ((xCount>=250 && xCount<260) && (yCount>=250 && yCount<300)) || 
+                  ((xCount>=250 && xCount<280) && (yCount>=290 && yCount<300)) || 
+                  ((xCount>=270 && xCount<280) && (yCount>=270 && yCount<300)) || 
+                  ((xCount>=260 && xCount<280) && (yCount>=270 && yCount<280));   
+
+    wire char_A = ((xCount>=290 && xCount<300) && (yCount>=250 && yCount<300)) || 
+                  ((xCount>=310 && xCount<320) && (yCount>=250 && yCount<300)) || 
+                  ((xCount>=290 && xCount<320) && (yCount>=250 && yCount<260)) || 
+                  ((xCount>=290 && xCount<320) && (yCount>=270 && yCount<280));   
+
+    wire char_M = ((xCount>=330 && xCount<340) && (yCount>=250 && yCount<300)) || 
+                  ((xCount>=350 && xCount<360) && (yCount>=250 && yCount<300)) || 
+                  ((xCount>=330 && xCount<360) && (yCount>=250 && yCount<260)) || 
+                  ((xCount>=340 && xCount<350) && (yCount>=250 && yCount<280));   
+
+    wire char_E1 = ((xCount>=370 && xCount<380) && (yCount>=250 && yCount<300)) || 
+                  ((xCount>=370 && xCount<400) && (yCount>=250 && yCount<260)) || 
+                  ((xCount>=370 && xCount<400) && (yCount>=270 && yCount<280)) || 
+                  ((xCount>=370 && xCount<400) && (yCount>=290 && yCount<300));   
+
+    wire char_O = ((xCount>=430 && xCount<460) && (yCount>=250 && yCount<260)) || 
+                  ((xCount>=430 && xCount<460) && (yCount>=290 && yCount<300)) || 
+                  ((xCount>=430 && xCount<440) && (yCount>=250 && yCount<300)) || 
+                  ((xCount>=450 && xCount<460) && (yCount>=250 && yCount<300));   
+
+    wire char_V = ((xCount>=470 && xCount<480) && (yCount>=250 && yCount<290)) || 
+                  ((xCount>=490 && xCount<500) && (yCount>=250 && yCount<290)) || 
+                  ((xCount>=470 && xCount<500) && (yCount>=290 && yCount<300));  
+
+    wire char_E2= ((xCount>=510 && xCount<520) && (yCount>=250 && yCount<300)) || 
+                  ((xCount>=510 && xCount<540) && (yCount>=250 && yCount<260)) || 
+                  ((xCount>=510 && xCount<540) && (yCount>=270 && yCount<280)) || 
+                  ((xCount>=510 && xCount<540) && (yCount>=290 && yCount<300)); 
+
+    wire char_R = ((xCount>=550 && xCount<560) && (yCount>=250 && yCount<300)) || 
+                  ((xCount>=550 && xCount<580) && (yCount>=250 && yCount<260)) || 
+                  ((xCount>=550 && xCount<580) && (yCount>=270 && yCount<280)) || 
+                  ((xCount>=570 && xCount<580) && (yCount>=250 && yCount<280)) || 
+                  ((xCount>=570 && xCount<580) && (yCount>=280 && yCount<300));   
+						
+	 assign text_draw = char_G || char_A || char_M || char_E1 || char_O || char_V || char_E2 || char_R;
+	 
+endmodule
+	 
+	 
+	 
+	 

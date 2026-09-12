@@ -1,0 +1,42 @@
+module Keyboard_Controller (
+    input  wire       ps2_clk,
+    input  wire       ps2_data,
+    output reg  [4:0] direction,   
+    output reg        reset_cmd   
+);
+
+    reg [7:0]  key_val;
+    reg [10:0] shift_reg;
+    reg [3:0]  bit_count = 0;
+    reg        key_break = 0; 
+
+    initial direction = 5'b10000; 
+
+    always @(negedge ps2_clk) begin
+        shift_reg[bit_count] <= ps2_data;
+        bit_count <= bit_count + 1;
+
+        if (bit_count == 10) begin 
+            bit_count <= 0;
+            
+            if (shift_reg[8:1] == 8'hF0) 
+                key_break <= 1;
+            else if (shift_reg[8:1] != 8'hF0 && key_break == 0) 
+                key_val <= shift_reg[8:1]; 
+            else 
+                key_break <= 0;
+        end
+    end
+
+    always @(key_val) begin
+        case (key_val)
+            8'h1D: direction = 5'b00010; 
+            8'h1C: direction = 5'b00100; 
+            8'h1B: direction = 5'b01000; 
+            8'h23: direction = 5'b10000; 
+            8'h5A: reset_cmd = 1;        
+            default: reset_cmd = 0;
+        endcase
+    end
+
+endmodule

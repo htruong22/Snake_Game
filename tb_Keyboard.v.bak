@@ -1,0 +1,111 @@
+`timescale 1ns/1ps
+
+module tb_Keyboard();
+
+    // 1. KHAI BÁO TÍN HIỆU
+    reg clk_50;      // Clock hệ thống 50MHz
+    reg ps2_clk;     // Clock bàn phím (giả lập)
+    reg ps2_data;    // Dữ liệu bàn phím (giả lập)
+    
+    wire [4:0] direction; // Kết quả hướng đi
+    wire reset_cmd;       // Kết quả lệnh reset
+
+    // 2. KẾT NỐI VỚI MODULE CẦN TEST (UUT)
+    Keyboard_Controller uut (
+        .clk(clk_50),
+        .ps2_clk(ps2_clk),
+        .ps2_data(ps2_data),
+        .direction(direction),
+        .reset_cmd(reset_cmd)
+    );
+
+    // 3. TẠO CLOCK HỆ THỐNG (50MHz)
+    always #10 clk_50 = ~clk_50; // Chu kỳ 20ns
+
+    // 4. TASK GIẢ LẬP GỬI 1 GÓI TIN PS/2 (11 bit)
+    // Tốc độ PS/2 thực tế khoảng 10-16kHz (chu kỳ ~60-100us)
+    // Nhưng trong mô phỏng ta cho nhanh hơn xíu để đỡ chờ lâu (ví dụ chu kỳ 40us)
+    task send_byte_ps2;
+        input [7:0] byte_data;
+        integer i;
+        reg parity;
+        begin
+            // Tính Parity lẻ (Odd Parity)
+            parity = ~(^byte_data); 
+
+            // --- BẮT ĐẦU GỬI ---
+            
+            // 1. Start Bit (Luôn là 0)
+            ps2_data = 0;
+            #20000 ps2_clk = 0; #20000 ps2_clk = 1; // 1 xung clock (40us)
+
+            // 2. 8 Bit Dữ liệu (LSB trước)
+            for (i=0; i<8; i=i+1) begin
+                ps2_data = byte_data[i];
+                #20000 ps2_clk = 0; #20000 ps2_clk = 1;
+            end
+
+            // 3. Parity Bit
+            ps2_data = parity;
+            #20000 ps2_clk = 0; #20000 ps2_clk = 1;
+
+            // 4. Stop Bit (Luôn là 1)
+            ps2_data = 1;
+            #20000 ps2_clk = 0; #20000 ps2_clk = 1;
+            
+            // Nghỉ một chút giữa các lần gửi
+            #50000; 
+        end
+    endtask
+
+    // 5. KỊCH BẢN TEST (TEST SCENARIO)
+    initial begin
+        // Khởi tạo
+        clk_50 = 0;
+        ps2_clk = 1; // Trạng thái nghỉ của PS/2 là mức cao
+        ps2_data = 1;
+
+        $display("=== BAT DAU TEST BAN PHIM PS/2 ===");
+        #1000; // Chờ ổn định
+
+        // --- TEST 1: Nhấn phím 'W' (Mã 1D) -> Mong đợi: LÊN (00010) ---
+        $display("Time: %t - Nhan phim W (1D)", $realtime);
+        send_byte_ps2(8'h1D); 
+        
+        #100000; // Chờ xử lý
+        if (direction == 5'b00010) $display("--> PASS: Da nhan dien huong LEN");
+        else $display("--> FAIL: Loi huong LEN. Nhan duoc: %b", direction);
+
+
+        // --- TEST 2: Nhả phím 'W' (Mã F0, 1D) -> Mong đợi: Giữ nguyên hướng ---
+        $display("Time: %t - Nha phim W (F0, 1D)", $realtime);
+        send_byte_ps2(8'hF0); // Mã Break
+        send_byte_ps2(8'h1D); // Mã phím vừa nhả
+        
+        #100000;
+        // Module kbInput của bạn chỉ bắt sự kiện NHẤN, nên khi nhả nó không đổi hướng (vẫn giữ LÊN)
+        if (direction == 5'b00010) $display("--> PASS: Huong van giu nguyen khi nha phim");
+        
+
+        // --- TEST 3: Nhấn phím 'A' (Mã 1C) -> Mong đợi: TRÁI (00100) ---
+        $display("Time: %t - Nhan phim A (1C)", $realtime);
+        send_byte_ps2(8'h1C);
+        
+        #100000;
+        if (direction == 5'b00100) $display("--> PASS: Da nhan dien huong TRAI");
+        else $display("--> FAIL: Loi huong TRAI. Nhan duoc: %b", direction);
+
+
+        // --- TEST 4: Nhấn phím 'Enter' (Mã 5A) -> Mong đợi: RESET = 1 ---
+        $display("Time: %t - Nhan phim Enter (5A)", $realtime);
+        send_byte_ps2(8'h5A);
+        
+        #100000;
+        if (reset_cmd == 1) $display("--> PASS: Da nhan dien lenh RESET");
+        else $display("--> FAIL: Loi RESET");
+
+        $display("=== KET THUC TEST ===");
+        $stop;
+    end
+
+endmodule

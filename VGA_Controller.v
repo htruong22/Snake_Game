@@ -1,0 +1,44 @@
+module VGA_Controller (
+    input  wire       VGA_clk,
+    output reg [10:0] pixel_x,      
+    output reg [9:0]  pixel_y,      
+    output reg        video_on,     
+    output reg        h_sync,       
+    output reg        v_sync,      
+    output wire       blank_n      
+);
+    parameter H_ACTIVE = 800;
+    parameter H_SYNC_START = 856;
+    parameter H_SYNC_END = 976;
+    parameter H_TOTAL = 1040;
+
+    parameter V_ACTIVE = 600;
+    parameter V_SYNC_START = 637;
+    parameter V_SYNC_END = 643;
+    parameter V_TOTAL = 666;
+
+    always @(posedge VGA_clk) begin
+        if (pixel_x == H_TOTAL - 1)
+            pixel_x <= 0;
+        else
+            pixel_x <= pixel_x + 1;
+    end
+
+    always @(posedge VGA_clk) begin
+        if (pixel_x == H_TOTAL - 1) begin
+            if (pixel_y == V_TOTAL - 1)
+                pixel_y <= 0;
+            else
+                pixel_y <= pixel_y + 1;
+        end
+    end
+
+    always @(posedge VGA_clk) begin
+        video_on <= ((pixel_x < H_ACTIVE) && (pixel_y < V_ACTIVE));
+        h_sync   <= ((pixel_x >= H_SYNC_START) && (pixel_x < H_SYNC_END));
+        v_sync   <= ((pixel_y >= V_SYNC_START) && (pixel_y < V_SYNC_END));
+    end
+
+    assign blank_n = video_on; 
+
+endmodule

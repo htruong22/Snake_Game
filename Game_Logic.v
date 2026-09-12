@@ -1,0 +1,323 @@
+/*module Game_Logic (
+    input  wire        VGA_CLK,
+    input  wire        game_tick,
+    input  wire        SW0_RESET,
+    input  wire        reset_kb,
+    input  wire [4:0]  key_dir,
+    input  wire [10:0] px_x,
+    input  wire [9:0]  px_y,
+    input  wire [10:0] rnd_x,
+    input  wire [8:0]  rnd_y,
+
+    output reg  [7:0]  score,
+    output reg         game_over,
+    output reg  [4:0]  cur_dir,
+
+    output reg         is_border,
+    output reg         is_obstacle,
+    output reg         is_apple,
+    output reg         is_head,
+    output reg         is_body
+);
+
+    reg [10:0] apple_x;
+    reg [8:0]  apple_y;
+    reg [10:0] snake_x [0:127];
+    reg [9:0]  snake_y [0:127];
+    reg [6:0]  snake_len;
+    integer i;
+
+    // ===================================================
+    // KHAI BÁO MÁY TRẠNG THÁI (EXPLICIT FSM)
+    // ===================================================
+    localparam S_INIT = 2'b00; // Trạng thái khởi tạo
+    localparam S_PLAY = 2'b01; // Trạng thái chơi game
+    localparam S_OVER = 2'b10; // Trạng thái Game Over
+
+    reg [1:0] current_state, next_state;
+
+    // ---------------------------------------------------
+    // TIẾN TRÌNH 1: QUÉT TỌA ĐỘ HIỂN THỊ (50 MHz)
+    // ---------------------------------------------------  
+    always @(posedge VGA_CLK) begin
+        is_border <= (px_x < 10 || px_x >= 790 || px_y < 10 || px_y >= 590);
+        
+        is_obstacle <= ((px_x >= 200 && px_x < 300) && (px_y >= 140 && px_y < 160)) ||
+                       ((px_x >= 500 && px_x < 600) && (px_y >= 440 && px_y < 460)) ||
+                       ((px_x >= 580 && px_x < 600) && (px_y >= 150  && px_y < 250)) ||
+                       ((px_x >= 200 && px_x < 220) && (px_y >= 350 && px_y < 450));
+
+        is_apple <= (px_x >= apple_x && px_x < apple_x + 10 && 
+                     px_y >= apple_y && px_y < apple_y + 10);
+
+        is_head <= (px_x >= snake_x[0] && px_x < snake_x[0] + 10 && 
+                    px_y >= snake_y[0] && px_y < snake_y[0] + 10);
+            
+        is_body = 0;
+        for (i = 1; i < snake_len && i < 64; i = i + 1) begin
+            if (px_x >= snake_x[i] && px_x < snake_x[i] + 10 && 
+                px_y >= snake_y[i] && px_y < snake_y[i] + 10)
+                is_body = 1;
+        end
+    end
+
+    // ---------------------------------------------------
+    // FSM
+    // ---------------------------------------------------
+    
+    // Khối 1: Cập nhật trạng thái hiện tại (Đồng bộ theo Clock)
+    always @(posedge game_tick) begin
+        if (~SW0_RESET || reset_kb)
+            current_state <= S_INIT;
+        else
+            current_state <= next_state;
+    end
+
+    // Khối 2: Logic quyết định trạng thái tiếp theo (Mạch tổ hợp)
+    always @(*) begin
+        next_state = current_state; // Mặc định giữ nguyên trạng thái
+        
+        case (current_state)
+            S_INIT: next_state = S_PLAY; // Luôn tự động chuyển sang PLAY sau khi INIT
+            
+            S_PLAY: begin
+                if (game_over) next_state = S_OVER; // Nếu đâm tường/thân -> sang OVER
+            end
+            
+            S_OVER: next_state = S_OVER; // Kẹt ở đây chờ Reset 
+            
+            default: next_state = S_INIT;
+        endcase
+    end
+
+    // ---------------------------------------------------
+    // TIẾN TRÌNH 2B: DATA PATH (Xử lý Game Logic)
+    // ---------------------------------------------------
+    always @(posedge game_tick) begin
+        if (current_state == S_INIT) begin 
+            // --- RESET DỮ LIỆU ---
+            snake_x[0] <= 400; snake_y[0] <= 300;
+            apple_x <= 420;    apple_y <= 300;
+            snake_len <= 1;    score <= 0;
+            game_over <= 0;    cur_dir <= 5'b10000;
+        end
+        else if (current_state == S_PLAY) begin 
+            // --- XỬ LÝ DI CHUYỂN & VA CHẠM ---
+            
+            // 1. Cập nhật hướng di chuyển (Khóa hướng quay đầu)
+            case (key_dir)
+                5'b00010: if (cur_dir != 5'b01000) cur_dir <= 5'b00010;
+                5'b00100: if (cur_dir != 5'b10000) cur_dir <= 5'b00100; 
+                5'b01000: if (cur_dir != 5'b00010) cur_dir <= 5'b01000; 
+                5'b10000: if (cur_dir != 5'b00100) cur_dir <= 5'b10000; 
+            endcase
+
+            // 2. Dịch tọa độ thân rắn
+            for (i = 127; i > 0; i = i - 1) begin
+                snake_x[i] <= snake_x[i-1];
+                snake_y[i] <= snake_y[i-1];
+            end
+
+            // 3. Tính toán tọa độ đầu rắn mới
+            case (cur_dir)
+                5'b00010: snake_y[0] <= snake_y[0] - 10;
+                5'b00100: snake_x[0] <= snake_x[0] - 10;
+                5'b01000: snake_y[0] <= snake_y[0] + 10;
+                5'b10000: snake_x[0] <= snake_x[0] + 10;
+            endcase
+
+            // 4. Kiểm tra đâm tường / chướng ngại vật
+            if ((snake_x[0] < 10 || snake_x[0] >= 790 || snake_y[0] < 10 || snake_y[0] >= 590) ||
+                ((snake_x[0] >= 200 && snake_x[0] < 300) && (snake_y[0] >= 140 && snake_y[0] < 160)) ||
+                ((snake_x[0] >= 500 && snake_x[0] < 600) && (snake_y[0] >= 440 && snake_y[0] < 460)) ||
+                ((snake_x[0] >= 580 && snake_x[0] < 600) && (snake_y[0] >= 150  && snake_y[0] < 250)) ||
+                ((snake_x[0] >= 200 && snake_x[0] < 220) && (snake_y[0] >= 350 && snake_y[0] < 450)))
+            begin
+                game_over <= 1; // Bật cờ (FSM sẽ tự nhảy sang S_OVER ở nhịp clock tiếp theo)
+            end
+
+            // 5. Kiểm tra cắn vào thân
+            if (snake_len > 4) begin
+                for (i = 4; i < snake_len; i = i + 1)
+                    if (snake_x[0] == snake_x[i] && snake_y[0] == snake_y[i]) begin
+                        game_over <= 1;
+                    end
+            end
+
+            // 6. Kiểm tra ăn mồi
+            if ((snake_x[0] >= apple_x && snake_x[0] < apple_x + 10) && 
+                (snake_y[0] >= apple_y && snake_y[0] < apple_y + 10)) 
+            begin
+                snake_len <= snake_len + 1;
+                score <= score + 1;
+                apple_x <= ((rnd_x < 20 || rnd_x > 770)||(rnd_x >= 200 && rnd_x < 300)||(rnd_x >= 500 && rnd_x < 600)||(rnd_x >= 580 && rnd_x < 600)||(rnd_x >= 200 && rnd_x < 220)) ? 100 : rnd_x;
+                apple_y <= ((rnd_y < 20 || rnd_y > 570)||(rnd_y >= 140 && rnd_y < 160)||(rnd_y >= 440 && rnd_y < 460)||(rnd_y >= 150 && rnd_y < 250)||(rnd_y >= 350 && rnd_y < 450)) ? 100 : rnd_y;
+            end
+        end
+    end
+
+endmodule
+*/
+module Game_Logic (
+    input  wire        VGA_CLK,
+    input  wire        game_tick,
+    input  wire        SW0_RESET,
+    input  wire        reset_kb,
+    input  wire [4:0]  key_dir,
+    input  wire [10:0] px_x,
+    input  wire [9:0]  px_y,
+    input  wire [10:0] rnd_x,
+    input  wire [8:0]  rnd_y,
+
+    output reg  [7:0]  score,
+    output reg         game_over,
+    output reg  [4:0]  cur_dir,
+
+    output reg         is_border,
+    output reg         is_obstacle,
+    output reg         is_apple,
+    output reg         is_head,
+    output reg         is_body
+);
+
+    reg [10:0] apple_x;
+    reg [8:0]  apple_y;
+    reg [10:0] snake_x [0:127];
+    reg [9:0]  snake_y [0:127];
+    reg [6:0]  snake_len;
+    integer i;
+
+    // ===================================================
+    // KHAI BÁO MÁY TRẠNG THÁI (EXPLICIT FSM)
+    // ===================================================
+    localparam S_INIT = 2'b00; 
+    localparam S_PLAY = 2'b01; 
+    localparam S_OVER = 2'b10; 
+
+    reg [1:0] current_state, next_state;
+
+    // ---------------------------------------------------
+    // TIẾN TRÌNH 1: QUÉT TỌA ĐỘ HIỂN THỊ (50 MHz)
+    // ---------------------------------------------------  
+    always @(posedge VGA_CLK) begin
+        is_border <= (px_x < 10 || px_x >= 790 || px_y < 10 || px_y >= 590);
+        
+        is_obstacle <= ((px_x >= 200 && px_x < 300) && (px_y >= 140 && px_y < 160)) ||
+                       ((px_x >= 500 && px_x < 600) && (px_y >= 440 && px_y < 460)) ||
+                       ((px_x >= 580 && px_x < 600) && (px_y >= 150  && px_y < 250)) ||
+                       ((px_x >= 200 && px_x < 220) && (px_y >= 350 && px_y < 450));
+
+        is_apple <= (px_x >= apple_x && px_x < apple_x + 10 && 
+                     px_y >= apple_y && px_y < apple_y + 10);
+
+        is_head <= (px_x >= snake_x[0] && px_x < snake_x[0] + 10 && 
+                    px_y >= snake_y[0] && px_y < snake_y[0] + 10);
+            
+        // [ĐÃ FIX]: Sử dụng gán Non-blocking (<=) và cố định giới hạn vòng lặp
+        is_body <= 1'b0;
+        for (i = 1; i < 64; i = i + 1) begin
+            if (i < snake_len && px_x >= snake_x[i] && px_x < snake_x[i] + 10 && 
+                px_y >= snake_y[i] && px_y < snake_y[i] + 10) begin
+                is_body <= 1'b1;
+            end
+        end
+    end
+
+    // ---------------------------------------------------
+    // FSM
+    // ---------------------------------------------------
+    always @(posedge game_tick) begin
+        if (~SW0_RESET || reset_kb)
+            current_state <= S_INIT;
+        else
+            current_state <= next_state;
+    end
+
+    always @(*) begin
+        next_state = current_state; 
+        
+        case (current_state)
+            S_INIT: next_state = S_PLAY; 
+            
+            S_PLAY: begin
+                if (game_over) next_state = S_OVER; 
+            end
+            
+            S_OVER: next_state = S_OVER; 
+            
+            default: next_state = S_INIT;
+        endcase
+    end
+
+    // ---------------------------------------------------
+    // TIẾN TRÌNH 2B: DATA PATH (Xử lý Game Logic)
+    // ---------------------------------------------------
+    always @(posedge game_tick) begin
+        if (current_state == S_INIT) begin 
+            // --- RESET DỮ LIỆU ---
+            snake_x[0] <= 400; snake_y[0] <= 300;
+            apple_x <= 420;    apple_y <= 300;
+            snake_len <= 1;    score <= 0;
+            game_over <= 0;    cur_dir <= 5'b10000;
+        end
+        else if (current_state == S_PLAY) begin 
+            // --- XỬ LÝ DI CHUYỂN & VA CHẠM ---
+            
+            // 1. Cập nhật hướng di chuyển
+            case (key_dir)
+                5'b00010: if (cur_dir != 5'b01000) cur_dir <= 5'b00010;
+                5'b00100: if (cur_dir != 5'b10000) cur_dir <= 5'b00100; 
+                5'b01000: if (cur_dir != 5'b00010) cur_dir <= 5'b01000; 
+                5'b10000: if (cur_dir != 5'b00100) cur_dir <= 5'b10000; 
+            endcase
+
+            // 2. Dịch tọa độ thân rắn
+            for (i = 127; i > 0; i = i - 1) begin
+                snake_x[i] <= snake_x[i-1];
+                snake_y[i] <= snake_y[i-1];
+            end
+
+            // 3. Tính toán tọa độ đầu rắn mới
+            case (cur_dir)
+                5'b00010: snake_y[0] <= snake_y[0] - 10;
+                5'b00100: snake_x[0] <= snake_x[0] - 10;
+                5'b01000: snake_y[0] <= snake_y[0] + 10;
+                5'b10000: snake_x[0] <= snake_x[0] + 10;
+            endcase
+
+            // 4. Kiểm tra đâm tường / chướng ngại vật
+            if ((snake_x[0] < 10 || snake_x[0] >= 790 || snake_y[0] < 10 || snake_y[0] >= 590) ||
+                ((snake_x[0] >= 200 && snake_x[0] < 300) && (snake_y[0] >= 140 && snake_y[0] < 160)) ||
+                ((snake_x[0] >= 500 && snake_x[0] < 600) && (snake_y[0] >= 440 && snake_y[0] < 460)) ||
+                ((snake_x[0] >= 580 && snake_x[0] < 600) && (snake_y[0] >= 150  && snake_y[0] < 250)) ||
+                ((snake_x[0] >= 200 && snake_x[0] < 220) && (snake_y[0] >= 350 && snake_y[0] < 450)))
+            begin
+                game_over <= 1; 
+            end
+
+            // 5. [ĐÃ FIX]: Cố định giới hạn vòng lặp để Quartus tổng hợp phần cứng nhanh, tránh delay Timing.
+            if (snake_len > 4) begin
+                for (i = 4; i < 127; i = i + 1) begin
+                    if (i < snake_len && snake_x[0] == snake_x[i] && snake_y[0] == snake_y[i]) begin
+                        game_over <= 1;
+                    end
+                end
+            end
+
+            // 6. Kiểm tra ăn mồi
+            if ((snake_x[0] >= apple_x && snake_x[0] < apple_x + 10) && 
+                (snake_y[0] >= apple_y && snake_y[0] < apple_y + 10)) 
+            begin
+                // [ĐÃ FIX]: Thêm chốt an toàn để rắn dài tối đa 127, tránh Out-of-bounds crash.
+                if (snake_len < 127) begin
+                    snake_len <= snake_len + 1;
+                end
+                
+                score <= score + 1;
+                apple_x <= ((rnd_x < 20 || rnd_x > 770)||(rnd_x >= 200 && rnd_x < 300)||(rnd_x >= 500 && rnd_x < 600)||(rnd_x >= 580 && rnd_x < 600)||(rnd_x >= 200 && rnd_x < 220)) ? 100 : rnd_x;
+                apple_y <= ((rnd_y < 20 || rnd_y > 570)||(rnd_y >= 140 && rnd_y < 160)||(rnd_y >= 440 && rnd_y < 460)||(rnd_y >= 150 && rnd_y < 250)||(rnd_y >= 350 && rnd_y < 450)) ? 100 : rnd_y;
+            end
+        end
+    end
+
+endmodule

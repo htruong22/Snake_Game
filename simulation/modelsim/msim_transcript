@@ -1,0 +1,95 @@
+# Reading D:/altera/modelsim_ase/tcl/vsim/pref.tcl 
+# do Snake_Top_run_msim_rtl_verilog.do 
+# if {[file exists rtl_work]} {
+# 	vdel -lib rtl_work -all
+# }
+# vlib rtl_work
+# vmap work rtl_work
+# Modifying D:\altera\modelsim_ase\win32aloem/modelsim.ini
+# 
+# vlog -vlog01compat -work work +incdir+C:/Users/Gigabyte/OneDrive\ -\ University\ of\ Information\ Technology/Máy\ tính/Project_Final\ (1)/Project_Final {C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/Snake_Top.v}
+# Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+# -- Compiling module Snake_Top
+# 
+# Top level modules:
+# 	Snake_Top
+# vlog -vlog01compat -work work +incdir+C:/Users/Gigabyte/OneDrive\ -\ University\ of\ Information\ Technology/Máy\ tính/Project_Final\ (1)/Project_Final {C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/VGA_Controller.v}
+# Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+# -- Compiling module VGA_Controller
+# 
+# Top level modules:
+# 	VGA_Controller
+# vlog -vlog01compat -work work +incdir+C:/Users/Gigabyte/OneDrive\ -\ University\ of\ Information\ Technology/Máy\ tính/Project_Final\ (1)/Project_Final {C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/Game_Clock.v}
+# Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+# -- Compiling module Game_Clock
+# 
+# Top level modules:
+# 	Game_Clock
+# vlog -vlog01compat -work work +incdir+C:/Users/Gigabyte/OneDrive\ -\ University\ of\ Information\ Technology/Máy\ tính/Project_Final\ (1)/Project_Final {C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/Random_Generator.v}
+# Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+# -- Compiling module Random_Generator
+# 
+# Top level modules:
+# 	Random_Generator
+# vlog -vlog01compat -work work +incdir+C:/Users/Gigabyte/OneDrive\ -\ University\ of\ Information\ Technology/Máy\ tính/Project_Final\ (1)/Project_Final {C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/Keyboard_Controller.v}
+# Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+# -- Compiling module Keyboard_Controller
+# 
+# Top level modules:
+# 	Keyboard_Controller
+# vlog -vlog01compat -work work +incdir+C:/Users/Gigabyte/OneDrive\ -\ University\ of\ Information\ Technology/Máy\ tính/Project_Final\ (1)/Project_Final {C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/Hex_Decoder.v}
+# Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+# -- Compiling module Hex_Decoder
+# 
+# Top level modules:
+# 	Hex_Decoder
+# vlog -vlog01compat -work work +incdir+C:/Users/Gigabyte/OneDrive\ -\ University\ of\ Information\ Technology/Máy\ tính/Project_Final\ (1)/Project_Final {C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/GameOver_Display.v}
+# Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+# -- Compiling module GameOver_Display
+# 
+# Top level modules:
+# 	GameOver_Display
+# vlog -vlog01compat -work work +incdir+C:/Users/Gigabyte/OneDrive\ -\ University\ of\ Information\ Technology/Máy\ tính/Project_Final\ (1)/Project_Final {C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/Game_Logic.v}
+# Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+# -- Compiling module Game_Logic
+# 
+# Top level modules:
+# 	Game_Logic
+# 
+# vlog -vlog01compat -work work +incdir+C:/Users/Gigabyte/OneDrive\ -\ University\ of\ Information\ Technology/Máy\ tính/Project_Final\ (1)/Project_Final {C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/tb_Snake.v}
+# Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+# -- Compiling module tb_Snake
+# 
+# Top level modules:
+# 	tb_Snake
+# 
+# vsim -t 1ps -L altera_ver -L lpm_ver -L sgate_ver -L altera_mf_ver -L altera_lnsim_ver -L cycloneii_ver -L rtl_work -L work -voptargs="+acc"  tb_Snake
+# vsim -L altera_ver -L lpm_ver -L sgate_ver -L altera_mf_ver -L altera_lnsim_ver -L cycloneii_ver -L rtl_work -L work -voptargs=\"+acc\" -t 1ps tb_Snake 
+# Loading work.tb_Snake
+# Loading work.Snake_Top
+# Loading work.VGA_Controller
+# Loading work.Game_Clock
+# Loading work.Keyboard_Controller
+# Loading work.Random_Generator
+# Loading work.GameOver_Display
+# Loading work.Hex_Decoder
+# Loading work.Game_Logic
+# ** Warning: (vsim-3015) C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/Snake_Top.v(249): [PCDPC] - Port size (4 or 4) does not match connection size (32) for port 'digit'. The port definition is at: C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/Hex_Decoder.v(2).
+# 
+#         Region: /tb_Snake/uut/h0
+# ** Warning: (vsim-3015) C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/Snake_Top.v(250): [PCDPC] - Port size (4 or 4) does not match connection size (32) for port 'digit'. The port definition is at: C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/Hex_Decoder.v(2).
+# 
+#         Region: /tb_Snake/uut/h1
+# 
+# add wave *
+# view structure
+# .main_pane.structure.interior.cs.body.struct
+# view signals
+# .main_pane.objects.interior.cs.body.tree
+# run -all
+# Break in Module tb_Snake at C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/tb_Snake.v line 52
+# Simulation Breakpoint: Break in Module tb_Snake at C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/tb_Snake.v line 52
+# MACRO ./Snake_Top_run_msim_rtl_verilog.do PAUSED at line 24
+run -all
+# Break key hit 
+# Simulation stop requested.

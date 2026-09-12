@@ -1,0 +1,47 @@
+m255
+K3
+13
+cModel Technology
+Z0 dE:\CE213\Project_Final\simulation\modelsim
+vKeyboard_Controller
+IiLT_bffabET<821i::>OO1
+VSAFKoIWP>Bm=BUSP=QRna1
+Z1 dE:\CE213\Project_Final\simulation\modelsim
+w1764817223
+8Snake_Top.vo
+FSnake_Top.vo
+L0 31
+Z2 OV;L;10.1d;51
+r1
+31
+Z3 o-vlog01compat -work work -O0
+n@keyboard_@controller
+!i10b 1
+!s100 9873TZ`?E^HNT2AcLzkf21
+!s85 0
+!s108 1764817274.832000
+!s107 Snake_Top.vo|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+.|Snake_Top.vo|
+!s101 -O0
+!s92 -vlog01compat -work work +incdir+. -O0
+vtb_Keyboard
+!i10b 1
+!s100 GegIO[Qc[Hi`g0GZL8M?E0
+IB4@;PalYPl`;Ocm6:Bh0d0
+VAA9;0SoiC31k@[>;k^O990
+R1
+w1764780230
+8E:/CE213/Project_Final/tb_Keyboard.v
+FE:/CE213/Project_Final/tb_Keyboard.v
+L0 3
+R2
+r1
+!s85 0
+31
+!s108 1764817275.021000
+!s107 E:/CE213/Project_Final/tb_Keyboard.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+E:/CE213/Project_Final|E:/CE213/Project_Final/tb_Keyboard.v|
+!s101 -O0
+R3
+!s92 -vlog01compat -work work +incdir+E:/CE213/Project_Final -O0
+ntb_@keyboard

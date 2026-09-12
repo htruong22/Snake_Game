@@ -1,0 +1,194 @@
+m255
+K3
+13
+cModel Technology
+Z0 dC:\Users\Gigabyte\OneDrive - University of Information Technology\Máy tính\Project_Final (1)\Project_Final\simulation\modelsim
+vGame_Clock
+I_deW5=??eSh7STMcKbc=00
+VJD9m:CSMJY5LTR:FUT_T30
+Z1 dC:\Users\Gigabyte\OneDrive - University of Information Technology\Máy tính\Project_Final (1)\Project_Final\simulation\modelsim
+w1764734071
+8C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/Game_Clock.v
+FC:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/Game_Clock.v
+L0 1
+Z2 OV;L;10.1d;51
+r1
+31
+Z3 o-vlog01compat -work work -O0
+Z4 !s92 -vlog01compat -work work {+incdir+C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final} -O0
+n@game_@clock
+!i10b 1
+!s100 F=oY`oSKe;Ha6;DZLT?[N0
+!s85 0
+!s108 1779346429.147000
+!s107 C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/Game_Clock.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final|C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/Game_Clock.v|
+!s101 -O0
+vGame_Logic
+ID^KWHAah>`kQ4?UPGNB002
+V>JZdnC08NadE2P]gFKclb0
+R1
+w1779342482
+8C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/Game_Logic.v
+FC:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/Game_Logic.v
+L0 1
+R2
+r1
+31
+R3
+R4
+n@game_@logic
+!i10b 1
+!s100 CP:4Dk1coZSGNhlZPKZW[3
+!s85 0
+!s108 1779346429.449000
+!s107 C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/Game_Logic.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final|C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/Game_Logic.v|
+!s101 -O0
+vGameOver_Display
+I`2;G_^jjcFS>o@G4=48?h2
+V6f400o98564;=f<LWO4U43
+R1
+w1764737556
+8C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/GameOver_Display.v
+FC:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/GameOver_Display.v
+L0 1
+R2
+r1
+31
+R3
+R4
+n@game@over_@display
+!i10b 1
+!s100 Lz25j0cffzizDo]_TRWi[1
+!s85 0
+!s108 1779346429.390000
+!s107 C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/GameOver_Display.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final|C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/GameOver_Display.v|
+!s101 -O0
+vHex_Decoder
+IzD]e=e6f4;ZWaJUoKSgdR0
+V]KA__begD<Qa`NXBD`HNU2
+R1
+w1764688082
+8C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/Hex_Decoder.v
+FC:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/Hex_Decoder.v
+L0 1
+R2
+r1
+31
+R3
+R4
+n@hex_@decoder
+!i10b 1
+!s100 7la^JdVXJ>BIib0HAG02D3
+!s85 0
+!s108 1779346429.332000
+!s107 C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/Hex_Decoder.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final|C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/Hex_Decoder.v|
+!s101 -O0
+vKeyboard_Controller
+I1=TeJ]JY4W_RajMKlmBFC3
+VSAFKoIWP>Bm=BUSP=QRna1
+R1
+w1764687847
+8C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/Keyboard_Controller.v
+FC:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/Keyboard_Controller.v
+L0 1
+R2
+r1
+31
+R3
+R4
+n@keyboard_@controller
+!i10b 1
+!s100 lz[k4c;[D_:5F5UgS71E02
+!s85 0
+!s108 1779346429.271000
+!s107 C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/Keyboard_Controller.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final|C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/Keyboard_Controller.v|
+!s101 -O0
+vRandom_Generator
+I_gDomAaNLe0Bcg_=joli40
+Vc7C:D1FKMA2CT=C3=ND`S1
+R1
+w1764723392
+8C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/Random_Generator.v
+FC:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/Random_Generator.v
+L0 1
+R2
+r1
+31
+R3
+R4
+n@random_@generator
+!i10b 1
+!s100 _1GB3nCNM0Yak3GL2k0Rz2
+!s85 0
+!s108 1779346429.211000
+!s107 C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/Random_Generator.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final|C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/Random_Generator.v|
+!s101 -O0
+vSnake_Top
+I0_0HXEZVC8AllX4L:c?Fg1
+VGfUCWm;3?[;GENbR;CGY;0
+R1
+w1779342180
+8C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/Snake_Top.v
+FC:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/Snake_Top.v
+L0 175
+R2
+r1
+31
+R3
+n@snake_@top
+R4
+!i10b 1
+!s100 BkR=dlaeAMl6Dn@;L[kKR0
+!s85 0
+!s108 1779346429.025000
+!s107 C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/Snake_Top.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final|C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/Snake_Top.v|
+!s101 -O0
+vtb_Snake
+!i10b 1
+!s100 ^4hal90SP18=ZKnY5>_?O2
+IK;BA[MVzFm>2Xm[lBJYU;1
+V2h90_]@4MMnFbD]E3fV9]0
+R1
+w1764779501
+8C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/tb_Snake.v
+FC:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/tb_Snake.v
+L0 3
+R2
+r1
+!s85 0
+31
+!s108 1779346429.509000
+!s107 C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/tb_Snake.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final|C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/tb_Snake.v|
+!s101 -O0
+R3
+R4
+ntb_@snake
+vVGA_Controller
+ISfF8g>cHjKfgLQeYl@S9a0
+Vi=bj=f55I=gS7Mhn`UNWb2
+R1
+w1764723703
+8C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/VGA_Controller.v
+FC:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/VGA_Controller.v
+L0 1
+R2
+r1
+31
+R3
+R4
+n@v@g@a_@controller
+!i10b 1
+!s100 Y14UOfV@jImbP4[Y3K:9C0
+!s85 0
+!s108 1779346429.085000
+!s107 C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/VGA_Controller.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final|C:/Users/Gigabyte/OneDrive - University of Information Technology/Máy tính/Project_Final (1)/Project_Final/VGA_Controller.v|
+!s101 -O0

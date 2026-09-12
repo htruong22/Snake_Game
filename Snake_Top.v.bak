@@ -1,0 +1,164 @@
+module Snake_Top (
+    input  wire       CLOCK_50,    // Clock 50MHz
+    input  wire       PS2_CLK,     // Bàn phím
+    input  wire       PS2_DAT,
+    input  wire       SW0_RESET,   // Nút gạt Reset
+    
+    output reg  [9:0] VGA_R, VGA_G, VGA_B,
+    output wire       VGA_HS, VGA_VS,
+    output wire       VGA_BLANK_N, VGA_SYNC_N, VGA_CLK, // DAC Control
+    
+    output wire [9:0] LEDR,        // LED đỏ báo hướng
+    output wire [6:0] HEX0, HEX1   // LED 7 đoạn báo điểm
+);
+
+    // --- KHAI BÁO DÂY KẾT NỐI ---
+    wire [10:0] px_x;
+    wire [9:0]  px_y;
+    wire video_on;
+    wire game_tick;
+    wire [4:0] key_dir;
+    reg  [4:0] cur_dir;
+    wire reset_kb;
+    wire [10:0] rand_x;
+    wire [8:0]  rand_y;
+    
+    // --- BIẾN GAME ---
+    reg [10:0] apple_x;
+    reg [8:0]  apple_y;
+    reg [10:0] snake_x [0:127];
+    reg [9:0]  snake_y [0:127];
+    reg [6:0]  snake_len;
+    reg [7:0]  score;
+    reg game_over;
+    
+    // Biến vẽ hình
+    reg is_border, is_obstacle, is_apple, is_head, is_body;
+    integer i;
+
+    // --- KẾT NỐI MODULE ---
+    assign VGA_CLK    = CLOCK_50;
+    assign VGA_SYNC_N = 1'b1;
+    assign LEDR[4:0]  = cur_dir;
+
+    VGA_Controller vga (
+        .clk_50MHz(CLOCK_50), .pixel_x(px_x), .pixel_y(px_y), 
+        .video_on(video_on), .h_sync(VGA_HS), .v_sync(VGA_VS), 
+        .blank_n(VGA_BLANK_N)
+    );
+
+    Game_Clock clk_gen (
+        .clk_50MHz(CLOCK_50), .score(score), .game_tick(game_tick)
+    );
+
+    Keyboard_Controller kb (
+        .ps2_clk(PS2_CLK), .ps2_data(PS2_DAT), 
+        .direction(key_dir), .reset_cmd(reset_kb)
+    );
+
+    Random_Generator rng (
+        .clk(CLOCK_50), .rand_x(rand_x), .rand_y(rand_y)
+    );
+
+    Hex_Decoder h0 (score % 10, HEX0);
+    Hex_Decoder h1 ((score / 10) % 10, HEX1);
+
+    // --- LOGIC VẼ HÌNH (RENDERING) ---
+    always @(posedge CLOCK_50) begin
+        // 1. Tường biên
+        is_border <= (px_x < 10 || px_x >= 790 || px_y < 10 || px_y >= 590);
+        
+        // 2. Vật cản (Obstacles)
+        is_obstacle <= ((px_x >= 200 && px_x < 300) && (px_y >= 150 && px_y < 160)) ||
+                       ((px_x >= 500 && px_x < 600) && (px_y >= 450 && px_y < 460)) ||
+                       ((px_x >= 550 && px_x < 560) && (px_y >= 50  && px_y < 150)) ||
+                       ((px_x >= 200 && px_x < 210) && (px_y >= 350 && px_y < 450));
+
+        // 3. Táo
+        is_apple <= (px_x >= apple_x && px_x < apple_x + 10 && 
+                     px_y >= apple_y && px_y < apple_y + 10);
+
+        // 4. Đầu rắn
+        is_head <= (px_x >= snake_x[0] && px_x < snake_x[0] + 10 && 
+                    px_y >= snake_y[0] && px_y < snake_y[0] + 10);
+
+        // 5. Thân rắn (Duyệt mảng)
+        is_body = 0;
+        for (i = 1; i < snake_len; i = i + 1) begin
+            if (px_x >= snake_x[i] && px_x < snake_x[i] + 10 && 
+                px_y >= snake_y[i] && px_y < snake_y[i] + 10)
+                is_body = 1;
+        end
+    end
+
+    // --- BỘ PHA MÀU (COLOR MIXER) ---
+    wire r_on, g_on, b_on;
+    assign r_on = video_on && (is_apple || (game_over && (is_border || is_obstacle || is_head || is_body)));
+    assign g_on = video_on && ((is_head || is_body) && ~game_over);
+    assign b_on = video_on && ((is_border || is_obstacle) && ~game_over);
+
+    always @(posedge CLOCK_50) begin
+        VGA_R <= {10{r_on}};
+        VGA_G <= {10{g_on}};
+        VGA_B <= {10{b_on}};
+    end
+
+    // --- LOGIC GAME (GAME PHYSICS) ---
+    always @(posedge game_tick) begin
+        if (~SW0_RESET || reset_kb) begin // RESET
+            snake_x[0] <= 400; snake_y[0] <= 300;
+            apple_x <= 420;    apple_y <= 300;
+            snake_len <= 1;    score <= 0;
+            game_over <= 0;    cur_dir <= 5'b10000;
+        end
+        else if (!game_over) begin // PLAY
+            // 1. Cập nhật hướng (Chống quay đầu)
+            case (key_dir)
+                5'b00010: if (cur_dir != 5'b01000) cur_dir <= 5'b00010; // Up
+                5'b00100: if (cur_dir != 5'b10000) cur_dir <= 5'b00100; // Left
+                5'b01000: if (cur_dir != 5'b00010) cur_dir <= 5'b01000; // Down
+                5'b10000: if (cur_dir != 5'b00100) cur_dir <= 5'b10000; // Right
+            endcase
+
+            // 2. Dời thân rắn
+            for (i = 127; i > 0; i = i - 1) begin
+                snake_x[i] <= snake_x[i-1];
+                snake_y[i] <= snake_y[i-1];
+            end
+
+            // 3. Dời đầu rắn
+            case (cur_dir)
+                5'b00010: snake_y[0] <= snake_y[0] - 10;
+                5'b00100: snake_x[0] <= snake_x[0] - 10;
+                5'b01000: snake_y[0] <= snake_y[0] + 10;
+                5'b10000: snake_x[0] <= snake_x[0] + 10;
+            endcase
+
+            // 4. Kiểm tra va chạm (Dùng tọa độ gốc chính xác)
+            if ((snake_x[0] < 10 || snake_x[0] >= 790 || snake_y[0] < 10 || snake_y[0] >= 590) ||
+                ((snake_x[0] >= 200 && snake_x[0] < 300) && (snake_y[0] >= 150 && snake_y[0] < 160)) ||
+                ((snake_x[0] >= 500 && snake_x[0] < 600) && (snake_y[0] >= 450 && snake_y[0] < 460)) ||
+                ((snake_x[0] >= 550 && snake_x[0] < 560) && (snake_y[0] >= 50  && snake_y[0] < 150)) ||
+                ((snake_x[0] >= 200 && snake_x[0] < 210) && (snake_y[0] >= 350 && snake_y[0] < 450)))
+                game_over <= 1;
+
+            // 5. Kiểm tra cắn đuôi
+            if (snake_len > 4) begin
+                for (i = 4; i < snake_len; i = i + 1)
+                    if (snake_x[0] == snake_x[i] && snake_y[0] == snake_y[i])
+                        game_over <= 1;
+            end
+
+            // 6. Ăn táo
+            if ((snake_x[0] >= apple_x && snake_x[0] < apple_x + 10) && 
+                (snake_y[0] >= apple_y && snake_y[0] < apple_y + 10)) 
+            begin
+                snake_len <= snake_len + 1;
+                score <= score + 1;
+                apple_x <= (rand_x < 20 || rand_x > 770) ? 400 : rand_x;
+                apple_y <= (rand_y < 20 || rand_y > 570) ? 300 : rand_y;
+            end
+        end
+    end
+
+endmodule

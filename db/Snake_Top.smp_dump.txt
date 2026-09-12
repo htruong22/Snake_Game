@@ -1,0 +1,6 @@
+
+State Machine - |Snake_Top|Game_Logic:logic_core|current_state
+Name current_state.S_INIT current_state.S_OVER current_state.S_PLAY 
+current_state.S_INIT 0 0 0 
+current_state.S_PLAY 1 0 1 
+current_state.S_OVER 1 1 0 
